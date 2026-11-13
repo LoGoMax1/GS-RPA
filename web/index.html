@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ArborGrid | RPA de Zeladoria</title>
+  <style>
+    /* Variáveis visuais centralizam as cores e facilitam a manutenção do tema. */
+    :root {
+      --ink: #17352b;
+      --muted: #678078;
+      --green: #2f7d5b;
+      --light-green: #e8f4ec;
+      --orange: #e89a3d;
+      --red: #c7584a;
+      --paper: #f7faf6;
+      --line: #dce8df;
+    }
+    /* Regras gerais de layout e tipografia. */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: radial-gradient(circle at top right, #dcefe1, transparent 35%), var(--paper);
+      font: 16px/1.5 system-ui, -apple-system, sans-serif;
+    }
+    .shell { max-width: 1120px; margin: auto; padding: 32px 20px 60px; }
+    header { display: flex; justify-content: space-between; gap: 20px; align-items: start; margin-bottom: 30px; }
+    .eyebrow { color: var(--green); font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { font-size: clamp(2rem, 5vw, 4rem); line-height: 1; margin: 8px 0 12px; }
+    h2 { margin-top: 0; }
+    .subtitle { max-width: 650px; color: var(--muted); }
+    .badge { background: var(--light-green); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; white-space: nowrap; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, .75fr); gap: 20px; }
+    .card { background: #fff; border: 1px solid var(--line); border-radius: 22px; box-shadow: 0 12px 30px #254d3910; padding: 24px; }
+    label { display: block; font-weight: 700; margin: 16px 0 6px; }
+    input, textarea, select { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; font: inherit; color: var(--ink); }
+    input[type="file"] { padding: 9px; background: #fbfdfb; }
+    .preview { display: none; max-width: 100%; max-height: 180px; margin-top: 10px; border-radius: 10px; object-fit: cover; }
+    .preview.visible { display: block; }
+    textarea { min-height: 100px; resize: vertical; }
+    button { width: 100%; margin-top: 20px; border: 0; border-radius: 12px; padding: 14px; color: #fff; background: var(--green); font: inherit; font-weight: 800; cursor: pointer; }
+    button:hover { filter: brightness(.92); }
+    button:disabled { opacity: .6; cursor: wait; }
+    .steps { display: grid; gap: 12px; }
+    .step { display: flex; gap: 12px; align-items: center; padding: 12px; background: var(--light-green); border-radius: 12px; }
+    .number { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; color: #fff; background: var(--green); font-weight: 800; }
+    .result { margin-top: 20px; padding: 18px; border-radius: 14px; background: var(--light-green); display: none; }
+    .result.visible { display: block; }
+    .result.error { background: #fff0ed; color: #7d2c24; }
+    .protocol { font-size: 1.4rem; font-weight: 900; }
+    .history { margin-top: 20px; }
+    .history-item { padding: 14px 0; border-bottom: 1px solid var(--line); }
+    .history-item:last-child { border-bottom: 0; }
+    .status { font-size: .78rem; font-weight: 900; padding: 4px 8px; border-radius: 999px; background: var(--light-green); }
+    .status.error { background: #fff0ed; color: var(--red); }
+    .muted { color: var(--muted); font-size: .9rem; }
+    @media (max-width: 760px) { header { display: block; } .badge { display: inline-block; } .layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <!-- Cabeçalho: identifica o projeto e explica o objetivo da demonstração. -->
+    <header>
+      <div>
+        <div class="eyebrow">ArborGrid · Demonstração RPA</div>
+        <h1>Da árvore crítica ao protocolo.</h1>
+        <p class="subtitle">Preencha uma ocorrência e acompanhe o mesmo fluxo do robô: validação, envio ao portal SP156 simulado, protocolo e registro no banco.</p>
+      </div>
+      <div class="badge">● Ambiente local simulado</div>
+    </header>
+
+    <!-- Área principal: formulário de entrada à esquerda e acompanhamento à direita. -->
+    <section class="layout">
+      <form class="card" id="occurrence-form">
+        <h2>Nova ocorrência</h2>
+        <p class="muted">Os dados abaixo representam uma ocorrência validada pelo MVP.</p>
+        <label for="id">ID da ocorrência</label>
+        <input id="id" name="id" placeholder="Ex.: occ-001">
+        <label for="localizacao">Localização *</label>
+        <input id="localizacao" name="localizacao" placeholder="Ex.: Rua A, 100 - São Paulo" required>
+        <label for="foto">Foto ou evidência *</label>
+        <input id="foto" name="foto" type="file" accept="image/*" required>
+        <img id="photo-preview" class="preview" alt="Prévia da imagem selecionada">
+        <label for="motivo_risco">Motivo do risco *</label>
+        <textarea id="motivo_risco" name="motivo_risco" placeholder="Ex.: Galhos em contato com a rede de média tensão" required></textarea>
+        <label for="modo_simulacao">Cenário do portal</label>
+        <select id="modo_simulacao" name="modo_simulacao">
+          <option value="sucesso">Sucesso: gerar protocolo</option>
+          <option value="timeout">Timeout: testar tratamento</option>
+          <option value="erro">Erro: portal indisponível</option>
+        </select>
+        <button id="submit-button" type="submit">Executar robô</button>
+        <div class="result" id="result" role="status"></div>
+      </form>
+
+      <!-- O painel lateral torna visíveis as quatro etapas do fluxo do robô. -->
+      <aside class="card">
+        <h2>Fluxo em execução</h2>
+        <div class="steps">
+          <div class="step"><span class="number">1</span><span>Recebe ocorrência validada</span></div>
+          <div class="step"><span class="number">2</span><span>Preenche o portal SP156 simulado</span></div>
+          <div class="step"><span class="number">3</span><span>Extrai o protocolo</span></div>
+          <div class="step"><span class="number">4</span><span>Salva status no SQLite</span></div>
+        </div>
+        <div class="history">
+          <h2>Histórico recente</h2>
+          <div id="history-list" class="muted">Carregando...</div>
+        </div>
+      </aside>
+    </section>
+  </main>
+  <script>
+    // Referências aos elementos que serão atualizados durante a execução.
+    const form = document.querySelector("#occurrence-form");
+    const button = document.querySelector("#submit-button");
+    const result = document.querySelector("#result");
+    const historyList = document.querySelector("#history-list");
+    const photoInput = document.querySelector("#foto");
+    const photoPreview = document.querySelector("#photo-preview");
+
+    // Exibe uma prévia local para confirmar visualmente a imagem escolhida.
+    photoInput.addEventListener("change", () => {
+      const file = photoInput.files[0];
+      if (!file) {
+        photoPreview.classList.remove("visible");
+        photoPreview.removeAttribute("src");
+        return;
+      }
+      photoPreview.src = URL.createObjectURL(file);
+      photoPreview.classList.add("visible");
+    });
+
+    function showResult(data) {
+      // Erros recebem uma aparência diferente; sucessos exibem o protocolo.
+      const failed = data.status !== "SUCESSO";
+      result.className = `result visible${failed ? " error" : ""}`;
+      result.innerHTML = failed
+        ? `<strong>${data.status || "ERRO"}</strong><br>${data.mensagem || data.erro}`
+        : `<strong>Ocorrência enviada com sucesso!</strong><div class="protocol">${data.protocolo}</div><span>${data.mensagem}</span>`;
+    }
+
+    async function loadHistory() {
+      // Busca no SQLite, por meio da API, as últimas execuções do robô.
+      const response = await fetch("/api/history");
+      const items = await response.json();
+      historyList.innerHTML = items.length ? items.slice(0, 8).map(item => `
+        <div class="history-item">
+          <span class="status ${item.status === "SUCESSO" ? "" : "error"}">${item.status}</span>
+          <strong>${item.protocolo || "Sem protocolo"}</strong>
+          <div>${item.occurrence_id} · ${new Date(item.timestamp).toLocaleString("pt-BR")}</div>
+        </div>`).join("") : "Nenhuma execução ainda.";
+    }
+
+    form.addEventListener("submit", async event => {
+      // Intercepta o envio tradicional para executar a API sem recarregar a página.
+      event.preventDefault();
+      button.disabled = true;
+      button.textContent = "Executando...";
+      try {
+        // O MVP simula o portal e registra o nome do arquivo, sem armazenar a imagem.
+        const formData = new FormData(form);
+        const selectedPhoto = photoInput.files[0];
+        const payload = Object.fromEntries(formData);
+        payload.foto = selectedPhoto ? selectedPhoto.name : "";
+        const response = await fetch("/api/process", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(payload)
+        });
+        showResult(await response.json());
+        await loadHistory();
+      } catch (error) {
+        // Falhas de conexão são exibidas de forma clara para quem está usando a demo.
+        showResult({status: "ERRO", mensagem: "Não foi possível conectar ao servidor local."});
+      } finally {
+        button.disabled = false;
+        button.textContent = "Executar robô";
+      }
+    });
+
+    // O histórico é carregado assim que a página abre.
+    loadHistory();
+  </script>
+</body>
+</html>
