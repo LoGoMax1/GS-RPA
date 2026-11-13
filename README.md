@@ -12,6 +12,22 @@ Automação em Python para consumir ocorrências de árvores de risco crítico v
 | 97158 | Lucas Moreno Matheus |
 | 99756 | Kayky Oliveira Schunck |
 
+## Problema e solução da automação
+
+### Problema
+
+Em São Paulo e na região metropolitana, árvores em situação de risco podem atingir a rede elétrica e causar quedas de energia, bloqueios de vias e riscos para moradores. Mesmo quando uma ocorrência é identificada e validada, o registro manual no canal de zeladoria pode ser demorado, repetitivo e sujeito a falhas.
+
+Esse processo também dificulta o acompanhamento: sem um protocolo e um histórico organizado, fica mais difícil saber quais ocorrências foram enviadas, quais falharam e quais precisam ser processadas novamente.
+
+### Solução
+
+O ArborGrid automatiza a abertura e o acompanhamento dessas solicitações. O robô recebe ocorrências críticas já validadas, preenche o formulário de zeladoria, captura o protocolo e salva o resultado em um banco SQLite.
+
+O MVP também trata situações de timeout e indisponibilidade do portal. Dessa forma, a equipe consegue visualizar o sucesso ou a falha de cada tentativa, mantendo um histórico para auditoria e acompanhamento.
+
+O site local permite demonstrar esse processo de forma acessível, sem depender do portal real, de credenciais ou de serviços externos. Na versão atual, o portal SP156 é simulado para fins de apresentação e testes.
+
 ## Fluxo ponta a ponta
 
 1. Lê a fila de ocorrências validadas.
