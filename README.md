@@ -12,6 +12,10 @@ Automação em Python para consumir ocorrências de árvores de risco crítico v
 | 97158 | Lucas Moreno Matheus |
 | 99756 | Kayky Oliveira Schunck |
 
+## Video 
+
+https://www.youtube.com/watch?v=0mVz2dLUdA8
+
 ## Problema e solução da automação
 
 ### Problema
