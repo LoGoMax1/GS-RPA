@@ -166,13 +166,21 @@ def create_handler(application: DemoApplication, static_directory: Path):
     return ApplicationHandler
 
 
-def run_server(host: str = "127.0.0.1", port: int = 8000) -> None:
+def run_server(
+    host: str = "127.0.0.1",
+    port: int = 8000,
+    initial_occurrence: dict[str, object] | None = None,
+) -> None:
     """Inicia o servidor local e mantém o processo atendendo requisições."""
 
     # Os caminhos são calculados a partir da raiz do projeto, não do terminal atual.
     root = Path(__file__).resolve().parent.parent
     application = DemoApplication(root / "rpa_demo.sqlite3")
     static_directory = root / "web"
+    if initial_occurrence is not None:
+        # A ocorrência inicial demonstra o fluxo automaticamente ao iniciar o comando.
+        result = application.process(initial_occurrence)
+        print(f"Ocorrência automática processada: {result.status} ({result.protocolo or 'sem protocolo'})")
     server = ThreadingHTTPServer((host, port), create_handler(application, static_directory))
     print(f"ArborGrid RPA disponível em http://{host}:{port}")
     try:

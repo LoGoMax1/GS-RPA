@@ -59,10 +59,18 @@ O site permite acompanhar o processo de forma visual, sem instalar dependências
 ### Iniciar
 
 ```bash
-python -m gs_rpa.web_app
+python -m gs_rpa
 ```
 
-Abra [http://127.0.0.1:8000](http://127.0.0.1:8000) no navegador, preencha a ocorrência e clique em **Executar robô**.
+Esse comando executa os testes automaticamente, cria e processa uma ocorrência de demonstração e inicia o site somente se todos passarem. Ao abrir [http://127.0.0.1:8000](http://127.0.0.1:8000), a ocorrência automática já estará no histórico, sem necessidade de preenchimento manual.
+
+Para processar outras ocorrências, você também pode preencher o formulário da página e clicar em **Executar robô**.
+
+Para iniciar somente o servidor, sem rodar os testes antes:
+
+```bash
+python -m gs_rpa.web_app
+```
 
 O campo **Foto ou evidência** aceita arquivos de imagem (`.jpg`, `.jpeg`, `.png` etc.) e mostra uma prévia antes do envio. Como o portal é simulado, o MVP registra o nome do arquivo, sem fazer upload para um serviço externo.
 
