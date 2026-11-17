@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import threading
 import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -53,10 +54,14 @@ class WebOccurrenceQueue:
 class DemoApplication:
     """Agrupa as dependências do robô e os recursos do servidor web."""
 
-    def __init__(self, database_path: str | Path) -> None:
+    def __init__(self, database_path: str | Path, log_path: str | Path | None = None) -> None:
         # As mesmas dependências do robô real são montadas uma única vez.
         self.repository = SQLiteStatusRepository(database_path)
         self.form_client = SimulatedFormClient()
+        root = Path(database_path).resolve().parent
+        self._log_path = Path(log_path) if log_path else root / "logs" / "execucoes.log"
+        self._log_path.parent.mkdir(parents=True, exist_ok=True)
+        self._log_lock = threading.Lock()
 
     def process(self, occurrence: dict[str, object]):
         """Executa o mesmo fluxo de produção usado pelo robô."""
@@ -67,7 +72,21 @@ class DemoApplication:
             self.form_client,
             self.repository,
         )
-        return robot.run()[0]
+        result = robot.run()[0]
+        self._write_execution_log(result)
+        return result
+
+    def _write_execution_log(self, result: Any) -> None:
+        """Acrescenta uma linha de auditoria para cada ocorrência processada."""
+
+        # O lock evita que duas requisições simultâneas misturem suas linhas.
+        line = (
+            f"{result.timestamp} | occurrence_id={result.occurrence_id} | "
+            f"status={result.status} | protocolo={result.protocolo or 'nenhum'} | "
+            f"mensagem={result.mensagem}\n"
+        )
+        with self._log_lock, self._log_path.open("a", encoding="utf-8") as log_file:
+            log_file.write(line)
 
     def history(self):
         """Lê o histórico persistido para exibição na tela."""

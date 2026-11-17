@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import unittest
 from pathlib import Path
 
@@ -21,9 +22,25 @@ def run_tests() -> bool:
     return test_result.wasSuccessful()
 
 
+def parse_arguments() -> argparse.Namespace:
+    """Lê o cenário que será usado na ocorrência automática."""
+
+    parser = argparse.ArgumentParser(
+        description="Executa os testes e inicia a demonstração do ArborGrid."
+    )
+    parser.add_argument(
+        "--cenario",
+        choices=("sucesso", "timeout", "erro"),
+        default="sucesso",
+        help="resultado da ocorrência automática (padrão: sucesso)",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
     """Testa o projeto e inicia o site quando não há falhas."""
 
+    arguments = parse_arguments()
     print("Executando testes do ArborGrid...")
     if not run_tests():
         raise SystemExit("Os testes falharam. O site não foi iniciado.")
@@ -31,11 +48,11 @@ def main() -> None:
     print("Testes aprovados. Iniciando o site...")
     run_server(
         initial_occurrence={
-            "id": "demo-automatico",
+            "id": f"demo-{arguments.cenario}",
             "localizacao": "Avenida Paulista, 1000 - São Paulo",
             "fotos": ["arvore-rede-eletrica.jpg"],
             "motivo_risco": "Galhos em conflito com a rede elétrica de média tensão.",
-            "modo_simulacao": "sucesso",
+            "modo_simulacao": arguments.cenario,
         }
     )
 

@@ -1,0 +1,7 @@
+2026-11-17T11:30:00+00:00 | occurrence_id=demo-automatico | etapa=validacao | status=OK
+2026-11-17T11:30:00+00:00 | occurrence_id=demo-automatico | etapa=envio_portal_simulado | status=OK
+2026-11-17T11:30:00+00:00 | occurrence_id=demo-automatico | etapa=protocolo | protocolo=SP156-SIM-DEMO1234
+2026-11-17T11:30:00+00:00 | occurrence_id=demo-automatico | etapa=persistencia | status=SUCESSO
+
+2026-11-17T11:31:00+00:00 | occurrence_id=demo-timeout | etapa=envio_portal_simulado | status=ERRO_TIMEOUT
+2026-11-17T11:31:00+00:00 | occurrence_id=demo-timeout | etapa=persistencia | status=ERRO_TIMEOUT

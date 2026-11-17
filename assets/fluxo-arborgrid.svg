@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="300" viewBox="0 0 1000 300" role="img" aria-labelledby="title desc">
+  <title id="title">Fluxo visual do ArborGrid</title>
+  <desc id="desc">Ocorrência validada passa pelo robô, pelo portal simulado e chega ao histórico SQLite.</desc>
+  <defs>
+    <style>
+      .box { fill: #e8f4ec; stroke: #2f7d5b; stroke-width: 2; }
+      .label { fill: #17352b; font: 700 18px system-ui, sans-serif; text-anchor: middle; }
+      .arrow { fill: none; stroke: #678078; stroke-width: 3; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#678078"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="300" fill="#f7faf6"/>
+  <rect class="box" x="30" y="105" width="180" height="80" rx="14"/>
+  <rect class="box" x="280" y="105" width="180" height="80" rx="14"/>
+  <rect class="box" x="530" y="105" width="180" height="80" rx="14"/>
+  <rect class="box" x="780" y="105" width="180" height="80" rx="14"/>
+  <text class="label" x="120" y="138"><tspan x="120">Ocorrência</tspan><tspan x="120" dy="25">validada</tspan></text>
+  <text class="label" x="370" y="138"><tspan x="370">Robot</tspan><tspan x="370" dy="25">Zeladoria</tspan></text>
+  <text class="label" x="620" y="138"><tspan x="620">Portal SP156</tspan><tspan x="620" dy="25">simulado</tspan></text>
+  <text class="label" x="870" y="138"><tspan x="870">SQLite +</tspan><tspan x="870" dy="25">histórico</tspan></text>
+  <path class="arrow" d="M210 145 H275"/>
+  <path class="arrow" d="M460 145 H525"/>
+  <path class="arrow" d="M710 145 H775"/>
+</svg>

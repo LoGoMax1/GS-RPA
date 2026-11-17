@@ -47,6 +47,18 @@ O site local permite demonstrar esse processo de forma acessível, sem depender 
 - `gs_rpa/web_app.py`: servidor local, API e portal SP156 simulado.
 - `web/index.html`: interface visual para executar o robô.
 - `tests/test_robot.py`: testes unitários do fluxo e tratamento de erros.
+- `docs/`: fluxograma e PDD do processo.
+- `logs/`: amostras sanitizadas de execuções, sem dados sensíveis.
+- `assets/`: evidências visuais da arquitetura e da tela de demonstração.
+
+### Artefatos de documentação e evidência
+
+O repositório inclui os artefatos solicitados para a apresentação:
+
+- [Fluxograma do RPA](docs/fluxo-rpa.md)
+- [PDD — Documento de Desenho do Processo](docs/PDD.md)
+- [Amostras de logs](logs/exemplo-execucao.log)
+- [Evidências visuais](assets/)
 
 ## Testes
 
@@ -68,6 +80,19 @@ python -m gs_rpa
 
 Esse comando executa os testes automaticamente, cria e processa uma ocorrência de demonstração e inicia o site somente se todos passarem. Ao abrir [http://127.0.0.1:8000](http://127.0.0.1:8000), a ocorrência automática já estará no histórico, sem necessidade de preenchimento manual.
 
+O cenário padrão é sucesso. Para testar outros resultados diretamente pelo comando:
+
+```bash
+python -m gs_rpa --cenario timeout
+python -m gs_rpa --cenario erro
+```
+
+Também é possível informar explicitamente:
+
+```bash
+python -m gs_rpa --cenario sucesso
+```
+
 Para processar outras ocorrências, você também pode preencher o formulário da página e clicar em **Executar robô**.
 
 Para iniciar somente o servidor, sem rodar os testes antes:
@@ -84,7 +109,7 @@ O campo **Foto ou evidência** aceita arquivos de imagem (`.jpg`, `.jpeg`, `.png
 - **Timeout:** demonstra o status `ERRO_TIMEOUT`.
 - **Erro:** demonstra o status `ERRO` quando o portal está indisponível.
 
-Cada execução aparece no histórico da tela e é salva no arquivo local `rpa_demo.sqlite3`, que é ignorado pelo Git.
+Cada execução aparece no histórico da tela, é salva no arquivo local `rpa_demo.sqlite3` e também é acrescentada em `logs/execucoes.log`, com data/hora, ocorrência, status, protocolo e mensagem. O banco SQLite é ignorado pelo Git; os logs ficam versionáveis para auditoria e demonstração.
 
 ### Arquitetura simplificada
 

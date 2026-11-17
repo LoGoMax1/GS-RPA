@@ -1,0 +1,5 @@
+2026-11-17T11:42:00+00:00 | occurrence_id=demo-inicial | status=SUCESSO | protocolo=SP156-SIM-DEMO0001 | mensagem=Registro inicial sanitizado para demonstracao.
+2026-11-17T11:42:32.835145+00:00 | occurrence_id=demo-automatico | status=SUCESSO | protocolo=SP156-SIM-5D4FF817 | mensagem=Ocorrência enviada para o formulário de zeladoria.
+2026-11-17T11:44:31.592230+00:00 | occurrence_id=demo-automatico | status=SUCESSO | protocolo=SP156-SIM-0F9D6310 | mensagem=Ocorrência enviada para o formulário de zeladoria.
+2026-11-17T11:45:47.488191+00:00 | occurrence_id=demo-timeout | status=ERRO_TIMEOUT | protocolo=nenhum | mensagem=Timeout ao acessar ou enviar formulário de zeladoria.
+2026-11-17T11:46:07.568523+00:00 | occurrence_id=demo-erro | status=ERRO | protocolo=nenhum | mensagem=Falha ao processar ocorrência: O portal simulado está indisponível.
