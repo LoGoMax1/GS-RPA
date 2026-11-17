@@ -14,7 +14,7 @@ Automação em Python para consumir ocorrências de árvores de risco crítico v
 
 ## Video 
 
-https://www.youtube.com/watch?v=0mVz2dLUdA8
+https://www.youtube.com/watch?v=02Gy9LZp72g
 
 ## Problema e solução da automação
 
